@@ -16,6 +16,14 @@ import {
 
 import { Unit } from "./unit";
 import { Header } from "./header";
+import fs from 'fs';
+import path from 'path';
+import dynamic from 'next/dynamic';
+
+const TEACHER_DATA = path.join(process.cwd(), 'data', 'teacher_activities.json');
+
+// Dynamically import client component to avoid SSR/SSR hydration mismatch
+const TeacherActivityClient = dynamic(() => import('@/app/components/teacher-activity'), { ssr: false });
 
 const LearnPage = async () => {
   const userProgressData = getUserProgress();
@@ -76,6 +84,20 @@ const LearnPage = async () => {
             />
           </div>
         ))}
+        {/* Teacher-created activities */}
+        {(() => {
+          try {
+            const raw = fs.readFileSync(TEACHER_DATA, 'utf-8');
+            const activities = JSON.parse(raw || '[]');
+            return activities.map((a: any) => (
+              <div key={a.id}>
+                <TeacherActivityClient activity={a} />
+              </div>
+            ));
+          } catch (e) {
+            return null;
+          }
+        })()}
       </FeedWrapper>
     </div>
   );
