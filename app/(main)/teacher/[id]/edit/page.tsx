@@ -63,6 +63,32 @@ export default function EditActivityPage() {
                 </div>
               ))}
             </div>
+            <div className="mt-2">
+              <label className="block text-sm">Question image (optional)</label>
+              {q.image ? (
+                <div className="flex items-center gap-2 mt-2">
+                  <img src={q.image} alt={`q-${i}-img`} className="w-32 h-20 object-cover rounded border" />
+                  <div className="flex flex-col">
+                    <input type="file" accept="image/*" onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      const fr = new FileReader();
+                      fr.onload = () => { const copy = [...questions]; copy[i].image = fr.result as string; setQuestions(copy); };
+                      fr.readAsDataURL(file);
+                    }} />
+                    <button type="button" className="text-sm text-red-600 mt-1" onClick={() => { const copy = [...questions]; copy[i].image = null; setQuestions(copy); }}>Remove image</button>
+                  </div>
+                </div>
+              ) : (
+                <input type="file" accept="image/*" onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  const fr = new FileReader();
+                  fr.onload = () => { const copy = [...questions]; copy[i].image = fr.result as string; setQuestions(copy); };
+                  fr.readAsDataURL(file);
+                }} />
+              )}
+            </div>
           </div>
         ))}
       </div>

@@ -5,52 +5,23 @@ import { Quests } from "@/components/quests";
 import { FeedWrapper } from "@/components/feed-wrapper";
 import { UserProgress } from "@/components/user-progress";
 import { StickyWrapper } from "@/components/sticky-wrapper";
-import { lessons, units as unitsSchema } from "@/db/schema";
-import { 
-  getCourseProgress, 
-  getLessonPercentage, 
-  getUnits, 
-  getUserProgress,
-  getUserSubscription
-} from "@/db/queries";
-
-import { Unit } from "./unit";
+import { getUserProgress, getUserSubscription } from "@/db/queries";
 import { Header } from "./header";
 import fs from 'fs';
 import path from 'path';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 
 const TEACHER_DATA = path.join(process.cwd(), 'data', 'teacher_activities.json');
 
-// Dynamically import client component to avoid SSR/SSR hydration mismatch
+// Dynamically import client components
 const TeacherActivityClient = dynamic(() => import('@/app/components/teacher-activity'), { ssr: false });
+const TeacherActivityList = dynamic(() => import('@/app/components/teacher-activity-list'), { ssr: false });
 
 const LearnPage = async () => {
-  const userProgressData = getUserProgress();
-  const courseProgressData = getCourseProgress();
-  const lessonPercentageData = getLessonPercentage();
-  const unitsData = getUnits();
-  const userSubscriptionData = getUserSubscription();
-
-  const [
-    userProgress,
-    units,
-    courseProgress,
-    lessonPercentage,
-    userSubscription,
-  ] = await Promise.all([
-    userProgressData,
-    unitsData,
-    courseProgressData,
-    lessonPercentageData,
-    userSubscriptionData,
-  ]);
+  const [userProgress, userSubscription] = await Promise.all([getUserProgress(), getUserSubscription()]);
 
   if (!userProgress || !userProgress.activeCourse) {
-    redirect("/courses");
-  }
-
-  if (!courseProgress) {
     redirect("/courses");
   }
 
@@ -69,31 +40,16 @@ const LearnPage = async () => {
       </StickyWrapper>
       <FeedWrapper>
         <Header title={userProgress.activeCourse.title} />
-        {units.map((unit) => (
-          <div key={unit.id} className="mb-10">
-            <Unit
-              id={unit.id}
-              order={unit.order}
-              description={unit.description}
-              title={unit.title}
-              lessons={unit.lessons}
-              activeLesson={courseProgress.activeLesson as typeof lessons.$inferSelect & {
-                unit: typeof unitsSchema.$inferSelect;
-              } | undefined}
-              activeLessonPercentage={lessonPercentage}
-            />
-          </div>
-        ))}
-        {/* Teacher-created activities */}
+  {/* Built-in Units removed — only teacher activities are displayed here now. */}
+        {/* Teacher-created activities: client component splits available vs history using localStorage */}
         {(() => {
           try {
             const raw = fs.readFileSync(TEACHER_DATA, 'utf-8');
             const activities = JSON.parse(raw || '[]');
-            return activities.map((a: any) => (
-              <div key={a.id}>
-                <TeacherActivityClient activity={a} />
-              </div>
-            ));
+            if (!activities || activities.length === 0) return null;
+            return (
+              <TeacherActivityList activities={activities} />
+            );
           } catch (e) {
             return null;
           }

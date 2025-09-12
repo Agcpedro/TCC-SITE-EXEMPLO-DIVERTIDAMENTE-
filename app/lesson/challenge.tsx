@@ -9,6 +9,7 @@ type Props = {
   status: "correct" | "wrong" | "none";
   selectedOption?: number;
   disabled?: boolean;
+  optionStatuses?: Record<number, "correct" | "wrong" | "none">;
   type: typeof challenges.$inferSelect["type"];
 };
 
@@ -18,6 +19,7 @@ export const Challenge = ({
   status,
   selectedOption,
   disabled,
+  optionStatuses,
   type,
 }: Props) => {
   return (
@@ -26,21 +28,24 @@ export const Challenge = ({
       type === "ASSIST" && "grid-cols-1",
       type === "SELECT" && "grid-cols-2 lg:grid-cols-[repeat(auto-fit,minmax(0,1fr))]"
     )}>
-      {options.map((option, i) => (
-        <Card
-          key={option.id}
-          id={option.id}
-          text={option.text}
-          imageSrc={option.imageSrc}
-          shortcut={`${i + 1}`}
-          selected={selectedOption === option.id}
-          onClick={() => onSelect(option.id)}
-          status={status}
-          audioSrc={option.audioSrc}
-          disabled={disabled}
-          type={type}
-        />
-      ))}
+      {options.map((option, i) => {
+        const perOptionStatus = optionStatuses && optionStatuses[option.id] ? optionStatuses[option.id] : (selectedOption === option.id ? status : 'none');
+        return (
+          <Card
+            key={option.id}
+            id={option.id}
+            text={option.text}
+            imageSrc={option.imageSrc}
+            shortcut={`${i + 1}`}
+            selected={selectedOption === option.id}
+            onClick={() => onSelect(option.id)}
+            status={perOptionStatus}
+            audioSrc={option.audioSrc}
+            disabled={disabled}
+            type={type}
+          />
+        );
+      })}
     </div>
   );
 };

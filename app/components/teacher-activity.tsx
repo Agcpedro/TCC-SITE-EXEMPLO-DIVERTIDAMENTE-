@@ -53,7 +53,8 @@ export default function TeacherActivity({ activity }: { activity: any }) {
       <Challenge
         options={q.choices.map((c: string, idx: number) => ({ id: idx + 1, text: c }))}
         onSelect={(id: number) => onSelect(id - 1)}
-        status={status}
+  status={status}
+  optionStatuses={{}}
         selectedOption={selected !== undefined ? selected + 1 : undefined}
         disabled={pending}
   type={'SELECT' as any}
