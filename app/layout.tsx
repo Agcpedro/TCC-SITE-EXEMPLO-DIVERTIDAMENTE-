@@ -7,6 +7,8 @@ import { HeartsModal } from "@/components/modals/hearts-modal";
 import { PracticeModal } from "@/components/modals/practice-modal";
 import "./globals.css";
 
+<ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}></ClerkProvider>
+
 const font = Nunito({ subsets: ["latin"] });
 
 export const metadata: Metadata = {

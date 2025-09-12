@@ -32,8 +32,8 @@ export const Unit = ({
       <div className="flex items-center flex-col relative">
         {lessons.map((lesson, index) => {
           const isCurrent = lesson.id === activeLesson?.id;
-          const isLocked = !lesson.completed && !isCurrent;
 
+          // Always show lessons as unlocked in the UI (remove paywall)
           return (
             <LessonButton
               key={lesson.id}
@@ -41,7 +41,7 @@ export const Unit = ({
               index={index}
               totalCount={lessons.length - 1}
               current={isCurrent}
-              locked={isLocked}
+              locked={false}
               percentage={activeLessonPercentage}
             />
           );

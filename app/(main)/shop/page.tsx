@@ -22,6 +22,7 @@ const ShopPage = async () => {
     userSubscriptionData
   ]);
 
+  //asassas
   if (!userProgress || !userProgress.activeCourse) {
     redirect("/courses");
   }
@@ -37,9 +38,7 @@ const ShopPage = async () => {
           points={userProgress.points}
           hasActiveSubscription={isPro}
         />
-        {!isPro && (
-          <Promo />
-        )}
+  {/* Promo removed: no Upgrade to Pro UI shown */}
         <Quests points={userProgress.points} />
       </StickyWrapper>
       <FeedWrapper>

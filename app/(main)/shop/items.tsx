@@ -33,16 +33,9 @@ export const Items = ({
     });
   };
 
-  const onUpgrade = () => {
-    startTransition(() => {
-      createStripeUrl()
-        .then((response) => {
-          if (response.data) {
-            window.location.href = response.data;
-          }
-        })
-        .catch(() => toast.error("Something went wrong"));
-    });
+  // onUpgrade removed from UI to avoid showing Stripe checkout CTA
+  const onDetails = () => {
+    window.location.href = "/shop";
   };
 
   return (
@@ -97,11 +90,8 @@ export const Items = ({
             Unlimited hearts
           </p>
         </div>
-        <Button
-          onClick={onUpgrade}
-          disabled={pending}
-        >
-          {hasActiveSubscription ? "settings" : "upgrade"}
+        <Button onClick={onDetails} disabled={pending}>
+          {hasActiveSubscription ? "settings" : "details"}
         </Button>
       </div>
     </ul>

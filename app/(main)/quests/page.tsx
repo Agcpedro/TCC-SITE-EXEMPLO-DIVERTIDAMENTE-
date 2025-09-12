@@ -36,9 +36,7 @@ const QuestsPage = async () => {
           points={userProgress.points}
           hasActiveSubscription={isPro}
         />
-        {!isPro && (
-          <Promo />
-        )}
+  {/* Promo removed: no Upgrade to Pro UI shown */}
       </StickyWrapper>
       <FeedWrapper>
         <div className="w-full flex flex-col items-center">

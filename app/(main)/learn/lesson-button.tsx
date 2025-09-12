@@ -45,19 +45,16 @@ export const LessonButton = ({
 
   const isFirst = index === 0;
   const isLast = index === totalCount;
-  const isCompleted = !current && !locked;
+  // Treat lessons as unlocked in the UI (remove premium lock visuals)
+  const isCompleted = !current;
 
   const Icon = isCompleted ? Check : isLast ? Crown : Star;
 
-  const href = isCompleted ? `/lesson/${id}` : "/lesson";
+  const href = `/lesson/${id}`;
 
   return (
-    <Link 
-      href={href} 
-      aria-disabled={locked} 
-      style={{ pointerEvents: locked ? "none" : "auto" }}
-    >
-      <div
+  <Link href={href}>
+  <div
         className="relative"
         style={{
           right: `${rightPosition}px`,
@@ -85,15 +82,13 @@ export const LessonButton = ({
             >
               <Button
                 size="rounded"
-                variant={locked ? "locked" : "secondary"}
+        variant={"secondary"}
                 className="h-[70px] w-[70px] border-b-8"
               >
                 <Icon
                   className={cn(
                     "h-10 w-10",
-                    locked
-                    ? "fill-neutral-400 text-neutral-400 stroke-neutral-400"
-                    : "fill-primary-foreground text-primary-foreground",
+          "fill-primary-foreground text-primary-foreground",
                     isCompleted && "fill-none stroke-[4]"
                   )}
                 />
@@ -103,15 +98,13 @@ export const LessonButton = ({
         ) : (
           <Button
             size="rounded"
-            variant={locked ? "locked" : "secondary"}
+            variant={"secondary"}
             className="h-[70px] w-[70px] border-b-8"
           >
             <Icon
               className={cn(
                 "h-10 w-10",
-                locked
-                ? "fill-neutral-400 text-neutral-400 stroke-neutral-400"
-                : "fill-primary-foreground text-primary-foreground",
+                "fill-primary-foreground text-primary-foreground",
                 isCompleted && "fill-none stroke-[4]"
               )}
             />

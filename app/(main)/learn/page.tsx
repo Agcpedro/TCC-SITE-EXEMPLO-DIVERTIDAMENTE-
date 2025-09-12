@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
-import { Promo } from "@/components/promo";
+// Promo removed from Learn page
 import { Quests } from "@/components/quests";
 import { FeedWrapper } from "@/components/feed-wrapper";
 import { UserProgress } from "@/components/user-progress";
@@ -57,9 +57,6 @@ const LearnPage = async () => {
           points={userProgress.points}
           hasActiveSubscription={isPro}
         />
-        {!isPro && (
-          <Promo />
-        )}
         <Quests points={userProgress.points} />
       </StickyWrapper>
       <FeedWrapper>

@@ -47,7 +47,7 @@ export const HeartsModal = () => {
             You ran out of hearts!
           </DialogTitle>
           <DialogDescription className="text-center text-base">
-            Get Pro for unlimited hearts, or purchase them in the store.
+            You ran out of hearts — you can purchase more in the store.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="mb-4">
@@ -58,7 +58,7 @@ export const HeartsModal = () => {
               size="lg" 
               onClick={onClick}
             >
-              Get unlimited hearts
+              Buy hearts
             </Button>
             <Button
               variant="primaryOutline" 
