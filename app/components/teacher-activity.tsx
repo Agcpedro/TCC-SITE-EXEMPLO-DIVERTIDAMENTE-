@@ -26,11 +26,26 @@ export default function TeacherActivity({ activity }: { activity: any }) {
     if (q.correctIndex === selected) {
       setStatus('correct');
       try {
-        await fetch('/api/teacher-activities/award', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ points: 10 })
-        });
+        // only award if user hasn't completed this activity before (client-side guard)
+        try {
+          const raw = localStorage.getItem('teacher_activity_completed');
+          const map = raw ? JSON.parse(raw) : {};
+          const already = map[String(activity.id)];
+          if (!already) {
+            await fetch('/api/teacher-activities/award', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ points: 10 })
+            });
+          }
+        } catch (e) {
+          // if localStorage read fails for any reason, fall back to calling the endpoint (best effort)
+          await fetch('/api/teacher-activities/award', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ points: 10 })
+          });
+        }
       } catch (e) {
         toast.error('Failed to award points');
       }

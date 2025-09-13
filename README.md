@@ -2,7 +2,7 @@
 ### Cloning the repository
 
 ```shell
-git clone https://github.com/bouzayenilyes/lingo.git
+git clone https://github.com/bouzayenilyes/divertidamente.git
 ```
 
 ### Install packages

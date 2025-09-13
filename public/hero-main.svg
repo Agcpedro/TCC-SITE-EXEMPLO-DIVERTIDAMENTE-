@@ -1,0 +1,25 @@
+<svg width="800" height="520" viewBox="0 0 800 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7EE7B1" />
+      <stop offset="1" stop-color="#5FB15C" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="520" rx="32" fill="url(#g)" />
+  <g transform="translate(0,40)">
+    <circle cx="140" cy="120" r="72" fill="#FFF" fill-opacity="0.06" />
+    <circle cx="680" cy="380" r="96" fill="#FFF" fill-opacity="0.04" />
+  </g>
+  <g>
+    <text x="50%" y="45%" dominant-baseline="middle" text-anchor="middle"
+      font-family="Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial"
+      font-weight="700" font-size="48" fill="#ffffff">
+      Divertidamente
+    </text>
+    <text x="50%" y="60%" dominant-baseline="middle" text-anchor="middle"
+      font-family="Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial"
+      font-weight="500" font-size="18" fill="#ffffff" opacity="0.9">
+      Learn, practice and master new languages
+    </text>
+  </g>
+</svg>
