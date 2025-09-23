@@ -10,12 +10,14 @@ type Props = {
   label: string;
   iconSrc: string;
   href: string;
+  onBeforeNavigate?: (href: string) => boolean | void;
 };
 
 export const SidebarItem = ({
   label,
   iconSrc,
   href,
+  onBeforeNavigate,
 }: Props) => {
   const pathname = usePathname();
   const active = pathname === href;
@@ -26,7 +28,21 @@ export const SidebarItem = ({
       className="justify-start h-[52px]"
       asChild
     >
-      <Link href={href}>
+      <a
+        href={href}
+        onClick={(e) => {
+          try {
+            if (onBeforeNavigate) {
+              const result = onBeforeNavigate(href);
+              if (result === false) {
+                e.preventDefault();
+              }
+            }
+          } catch (err) {
+            // swallow
+          }
+        }}
+      >
         <Image
           src={iconSrc}
           alt={label}
@@ -35,7 +51,7 @@ export const SidebarItem = ({
           width={32}
         />
         {label}
-      </Link>
+      </a>
     </Button>
   );
 };

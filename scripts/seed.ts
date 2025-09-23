@@ -24,23 +24,23 @@ const main = async () => {
     await db.insert(schema.courses).values([
       {
         id: 1,
-        title: "Spanish",
-        imageSrc: "/es.svg",
+        title: "Matemática",
+        imageSrc: "/placeholder-course.svg",
       },
       {
         id: 2,
-        title: "Italian",
-        imageSrc: "/it.svg",
+        title: "Português",
+        imageSrc: "/placeholder-course.svg",
       },
       {
         id: 3,
-        title: "French",
-        imageSrc: "/fr.svg",
+        title: "Geografia",
+        imageSrc: "/placeholder-course.svg",
       },
       {
         id: 4,
-        title: "Croatian",
-        imageSrc: "/hr.svg",
+        title: "História",
+        imageSrc: "/placeholder-course.svg",
       },
     ]);
 

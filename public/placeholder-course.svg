@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300" fill="none">
+  <rect width="400" height="300" rx="16" fill="#E6F4EA" />
+  <rect x="16" y="16" width="368" height="208" rx="12" fill="#FFFFFF" stroke="#D1E7DD" />
+  <g transform="translate(40, 84)">
+    <rect x="0" y="0" width="80" height="80" rx="8" fill="#A7F3D0" />
+    <rect x="96" y="0" width="80" height="80" rx="8" fill="#86EFAC" />
+    <rect x="192" y="0" width="80" height="80" rx="8" fill="#6EE7B7" />
+  </g>
+  <text x="200" y="260" text-anchor="middle" font-family="Nunito, Arial, Helvetica, sans-serif" font-size="18" fill="#064E3B">Imagem de curso (placeholder)</text>
+</svg>
