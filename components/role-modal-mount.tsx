@@ -21,5 +21,22 @@ export default function RoleModalMount() {
     }
   }, [pathname]);
 
+  // If the user changes role to non-teacher while on /teacher, navigate away immediately
+  useEffect(() => {
+    const handler = (e: Event) => {
+      try {
+        const ce = e as CustomEvent<{ role?: string }>;
+        const newRole = ce.detail?.role;
+        if (pathname && pathname.startsWith('/teacher') && newRole !== 'teacher') {
+          window.location.href = '/learn';
+        }
+      } catch (err) {
+        // ignore
+      }
+    };
+    window.addEventListener('role-selected', handler as EventListener);
+    return () => window.removeEventListener('role-selected', handler as EventListener);
+  }, [pathname]);
+
   return <RoleModal />;
 }
