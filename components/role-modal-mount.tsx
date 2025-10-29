@@ -5,16 +5,17 @@ import { usePathname } from 'next/navigation';
 
 export default function RoleModalMount() {
   const pathname = usePathname();
-  const didDispatchRef = useRef(false);
+  const previousPathnameRef = useRef<string | null>(null);
 
   useEffect(() => {
     try {
-      // If user is entering /learn and has no role, trigger the modal
-      const role = localStorage.getItem('user_role');
-      if (!role && pathname && pathname.startsWith('/learn') && !didDispatchRef.current) {
+      const isLearn = Boolean(pathname && pathname.startsWith('/learn'));
+      const wasLearn = Boolean(previousPathnameRef.current && previousPathnameRef.current.startsWith('/learn'));
+      // When transitioning into /learn from a non-/learn route (or on first load at /learn), always show
+      if (isLearn && !wasLearn) {
         window.dispatchEvent(new Event('show-role-modal'));
-        didDispatchRef.current = true;
       }
+      previousPathnameRef.current = pathname ?? null;
     } catch (e) {
       // ignore
     }
