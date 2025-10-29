@@ -20,6 +20,8 @@ export default function TeacherQuestsManager({ quests }: { quests: any[] }) {
   const [deleting, setDeleting] = useState(false);
   const [creating, setCreating] = useState(false);
   const [xpValue, setXpValue] = useState('');
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editValue, setEditValue] = useState('');
   const router = useRouter();
 
   const handleDelete = async () => {
@@ -74,6 +76,43 @@ export default function TeacherQuestsManager({ quests }: { quests: any[] }) {
     }
   };
 
+  const startEdit = (quest: any) => {
+    setEditingId(quest.id);
+    setEditValue(quest.value.toString());
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditValue('');
+  };
+
+  const handleUpdate = async (id: string) => {
+    const value = parseInt(editValue);
+    if (!value || value <= 0) {
+      toast.error('Por favor, insira um valor de XP válido');
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/teacher-quests/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ value }),
+      });
+      
+      if (res.ok) {
+        toast.success('Missão atualizada com sucesso!');
+        setEditingId(null);
+        setEditValue('');
+        router.refresh();
+      } else {
+        toast.error('Erro ao atualizar missão');
+      }
+    } catch (error) {
+      toast.error('Erro ao atualizar missão');
+    }
+  };
+
   return (
     <>
       <div className="space-y-4">
@@ -103,17 +142,54 @@ export default function TeacherQuestsManager({ quests }: { quests: any[] }) {
         ) : (
           <ul className="space-y-2">
             {quests.map((q: any) => (
-              <li key={q.id} className="p-3 border rounded flex items-center justify-between">
-                <div>
-                  <div className="font-medium">Ganhar {q.value} XP</div>
-                  <div className="text-sm text-muted-foreground">Missão personalizada</div>
-                </div>
-                <button 
-                  onClick={() => setDeleteId(q.id)} 
-                  className="text-red-600 hover:underline"
-                >
-                  Delete
-                </button>
+              <li key={q.id} className="p-3 border rounded">
+                {editingId === q.id ? (
+                  <div className="flex gap-2 items-center">
+                    <input
+                      type="number"
+                      value={editValue}
+                      onChange={(e) => setEditValue(e.target.value)}
+                      className="flex-1 px-3 py-2 border rounded-md"
+                      placeholder="Valor de XP"
+                      min="1"
+                    />
+                    <Button
+                      onClick={() => handleUpdate(q.id)}
+                      size="sm"
+                      className="bg-green-600 hover:bg-green-700"
+                    >
+                      Salvar
+                    </Button>
+                    <Button
+                      onClick={cancelEdit}
+                      size="sm"
+                      variant="outline"
+                    >
+                      Cancelar
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="font-medium">Ganhar {q.value} XP</div>
+                      <div className="text-sm text-muted-foreground">Missão personalizada</div>
+                    </div>
+                    <div className="flex gap-2">
+                      <button 
+                        onClick={() => startEdit(q)} 
+                        className="text-blue-600 hover:underline"
+                      >
+                        Editar
+                      </button>
+                      <button 
+                        onClick={() => setDeleteId(q.id)} 
+                        className="text-red-600 hover:underline"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                )}
               </li>
             ))}
           </ul>

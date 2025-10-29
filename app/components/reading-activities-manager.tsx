@@ -20,6 +20,7 @@ export default function ReadingActivitiesManager({ activities }: { activities: a
   const [deleting, setDeleting] = useState(false);
   const [creating, setCreating] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -51,14 +52,27 @@ export default function ReadingActivitiesManager({ activities }: { activities: a
     }
   };
 
-  const handleCreate = async () => {
+  const resetForm = () => {
+    setTitle('');
+    setDescription('');
+    setXpReward('10');
+    setPdfFile(null);
+    setShowForm(false);
+    setEditingId(null);
+  };
+
+  const startEdit = (activity: any) => {
+    setEditingId(activity.id);
+    setTitle(activity.title);
+    setDescription(activity.description || '');
+    setXpReward(activity.xpReward.toString());
+    setShowForm(true);
+    setPdfFile(null); // PDF is optional in edit mode
+  };
+
+  const handleSave = async () => {
     if (!title.trim()) {
       toast.error('Por favor, insira um título');
-      return;
-    }
-    
-    if (!pdfFile) {
-      toast.error('Por favor, selecione um arquivo PDF');
       return;
     }
 
@@ -68,47 +82,91 @@ export default function ReadingActivitiesManager({ activities }: { activities: a
       return;
     }
 
-    setCreating(true);
-    try {
-      // Convert PDF to base64
-      const reader = new FileReader();
-      reader.readAsDataURL(pdfFile);
-      
-      reader.onload = async () => {
-        const pdfUrl = reader.result as string;
+    if (editingId) {
+      // UPDATE
+      setCreating(true);
+      try {
+        let pdfUrl = undefined;
         
-        const res = await fetch('/api/reading-activities', {
-          method: 'POST',
+        if (pdfFile) {
+          // If new PDF uploaded, convert it
+          const reader = new FileReader();
+          reader.readAsDataURL(pdfFile);
+          
+          await new Promise((resolve, reject) => {
+            reader.onload = () => {
+              pdfUrl = reader.result as string;
+              resolve(pdfUrl);
+            };
+            reader.onerror = reject;
+          });
+        }
+
+        const body: any = { title, description, xpReward: xp };
+        if (pdfUrl) body.pdfUrl = pdfUrl;
+        
+        const res = await fetch(`/api/reading-activities/${editingId}`, {
+          method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            title, 
-            description, 
-            xpReward: xp,
-            pdfUrl 
-          }),
+          body: JSON.stringify(body),
         });
         
         if (res.ok) {
-          toast.success('Atividade de leitura criada com sucesso!');
-          setTitle('');
-          setDescription('');
-          setXpReward('10');
-          setPdfFile(null);
-          setShowForm(false);
+          toast.success('Atividade atualizada com sucesso!');
+          resetForm();
           router.refresh();
         } else {
-          toast.error('Erro ao criar atividade');
+          toast.error('Erro ao atualizar atividade');
         }
+      } catch (error) {
+        toast.error('Erro ao atualizar atividade');
+      } finally {
         setCreating(false);
-      };
-      
-      reader.onerror = () => {
-        toast.error('Erro ao processar arquivo PDF');
+      }
+    } else {
+      // CREATE
+      if (!pdfFile) {
+        toast.error('Por favor, selecione um arquivo PDF');
+        return;
+      }
+
+      setCreating(true);
+      try {
+        const reader = new FileReader();
+        reader.readAsDataURL(pdfFile);
+        
+        reader.onload = async () => {
+          const pdfUrl = reader.result as string;
+          
+          const res = await fetch('/api/reading-activities', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+              title, 
+              description, 
+              xpReward: xp,
+              pdfUrl 
+            }),
+          });
+          
+          if (res.ok) {
+            toast.success('Atividade criada com sucesso!');
+            resetForm();
+            router.refresh();
+          } else {
+            toast.error('Erro ao criar atividade');
+          }
+          setCreating(false);
+        };
+        
+        reader.onerror = () => {
+          toast.error('Erro ao processar arquivo PDF');
+          setCreating(false);
+        };
+      } catch (error) {
+        toast.error('Erro ao criar atividade');
         setCreating(false);
-      };
-    } catch (error) {
-      toast.error('Erro ao criar atividade');
-      setCreating(false);
+      }
     }
   };
 
@@ -124,6 +182,10 @@ export default function ReadingActivitiesManager({ activities }: { activities: a
           </Button>
         ) : (
           <div className="border rounded-lg p-4 space-y-4 bg-gray-50">
+            <h4 className="font-semibold">
+              {editingId ? 'Editar Atividade' : 'Nova Atividade'}
+            </h4>
+            
             <div>
               <label className="text-sm font-medium mb-1 block">Título</label>
               <input 
@@ -147,7 +209,9 @@ export default function ReadingActivitiesManager({ activities }: { activities: a
             </div>
 
             <div>
-              <label className="text-sm font-medium mb-1 block">Arquivo PDF</label>
+              <label className="text-sm font-medium mb-1 block">
+                Arquivo PDF {editingId && '(deixe em branco para manter o atual)'}
+              </label>
               <input 
                 type="file"
                 accept=".pdf"
@@ -175,20 +239,14 @@ export default function ReadingActivitiesManager({ activities }: { activities: a
 
             <div className="flex gap-2">
               <Button 
-                onClick={handleCreate} 
+                onClick={handleSave} 
                 disabled={creating}
                 className="bg-green-600 hover:bg-green-700"
               >
-                {creating ? 'Criando...' : 'Criar atividade'}
+                {creating ? 'Salvando...' : editingId ? 'Salvar' : 'Criar atividade'}
               </Button>
               <Button 
-                onClick={() => {
-                  setShowForm(false);
-                  setTitle('');
-                  setDescription('');
-                  setPdfFile(null);
-                  setXpReward('10');
-                }}
+                onClick={resetForm}
                 variant="outline"
                 disabled={creating}
               >
@@ -213,12 +271,20 @@ export default function ReadingActivitiesManager({ activities }: { activities: a
                     📄 PDF • {a.xpReward} XP
                   </div>
                 </div>
-                <button 
-                  onClick={() => setDeleteId(a.id)} 
-                  className="text-red-600 hover:underline ml-4"
-                >
-                  Delete
-                </button>
+                <div className="flex gap-2 ml-4">
+                  <button 
+                    onClick={() => startEdit(a)} 
+                    className="text-blue-600 hover:underline"
+                  >
+                    Editar
+                  </button>
+                  <button 
+                    onClick={() => setDeleteId(a.id)} 
+                    className="text-red-600 hover:underline"
+                  >
+                    Delete
+                  </button>
+                </div>
               </li>
             ))}
           </ul>

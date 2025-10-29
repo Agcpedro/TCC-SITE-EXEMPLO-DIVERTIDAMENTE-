@@ -8,7 +8,8 @@ import { Button } from "@/components/ui/button";
 
 type Props = {
   label: string;
-  iconSrc: string;
+  iconSrc?: string;
+  emoji?: string;
   href: string;
   onBeforeNavigate?: (href: string) => boolean | void;
 };
@@ -16,6 +17,7 @@ type Props = {
 export const SidebarItem = ({
   label,
   iconSrc,
+  emoji,
   href,
   onBeforeNavigate,
 }: Props) => {
@@ -43,13 +45,17 @@ export const SidebarItem = ({
           }
         }}
       >
-        <Image
-          src={iconSrc}
-          alt={label}
-          className="mr-5"
-          height={32}
-          width={32}
-        />
+        {emoji ? (
+          <span className="mr-5 text-2xl">{emoji}</span>
+        ) : (
+          <Image
+            src={iconSrc!}
+            alt={label}
+            className="mr-5"
+            height={32}
+            width={32}
+          />
+        )}
         {label}
       </a>
     </Button>

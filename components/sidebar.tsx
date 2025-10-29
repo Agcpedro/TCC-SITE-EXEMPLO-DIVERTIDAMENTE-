@@ -58,25 +58,25 @@ export const Sidebar = ({ className }: Props) => {
       </Link>
       <div className="flex flex-col gap-y-2 flex-1">
         <SidebarItem 
-          label="Learn" 
+          label="Atividades" 
           href="/learn"
           iconSrc="/learn.svg"
         />
         <SidebarItem 
-          label="Leaderboard" 
+          label="Ranking" 
           href="/leaderboard"
           iconSrc="/leaderboard.svg"
         />
         <SidebarItem 
-          label="quests" 
+          label="Missões" 
           href="/quests"
           iconSrc="/quests.svg"
         />    
         {role === 'teacher' && (
           <SidebarItem 
-            label="Teacher"
+            label="Professor"
             href="/teacher"
-            iconSrc="/teacher.svg"
+            emoji="👨‍🏫"
           />
         )}
       </div>
