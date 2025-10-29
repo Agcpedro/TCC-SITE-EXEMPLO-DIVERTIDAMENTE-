@@ -5,7 +5,6 @@ import { Toaster } from "@/components/ui/sonner";
 import { ExitModal } from "@/components/modals/exit-modal";
 import { HeartsModal } from "@/components/modals/hearts-modal";
 import { PracticeModal } from "@/components/modals/practice-modal";
-import RoleModalMount from '@/components/role-modal-mount';
 import "./globals.css";
 
 <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}></ClerkProvider>
@@ -27,7 +26,6 @@ export default function RootLayout({
       <html lang="en">
         <body className={font.className}>
           <Toaster />
-          <RoleModalMount />
           <ExitModal />
           <HeartsModal />
           <PracticeModal />

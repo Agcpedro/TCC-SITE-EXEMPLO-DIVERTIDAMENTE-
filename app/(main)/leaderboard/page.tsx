@@ -9,6 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Promo } from "@/components/promo";
 import { Quests } from "@/components/quests";
+import { getRankFromXP } from "@/lib/ranks";
 
 const LearderboardPage = async () => {
   const userProgressData = getUserProgress();
@@ -36,12 +37,11 @@ const LearderboardPage = async () => {
       <StickyWrapper>
         <UserProgress
           activeCourse={userProgress.activeCourse}
-          hearts={userProgress.hearts}
           points={userProgress.points}
           hasActiveSubscription={isPro}
         />
   {/* Promo removed: no Upgrade to Pro UI shown */}
-        <Quests points={userProgress.points} />
+        <Quests points={userProgress.points} courseId={userProgress.activeCourseId} />
       </StickyWrapper>
       <FeedWrapper>
         <div className="w-full flex flex-col items-center">
@@ -58,28 +58,37 @@ const LearderboardPage = async () => {
             See where you stand among other learners in the community.
           </p>
           <Separator className="mb-4 h-0.5 rounded-full" />
-          {leaderboard.map((userProgress, index) => (
-            <div 
-              key={userProgress.userId}
-              className="flex items-center w-full p-2 px-4 rounded-xl hover:bg-gray-200/50"
-            >
-              <p className="font-bold text-lime-700 mr-4">{index + 1}</p>
-              <Avatar
-                className="border bg-green-500 h-12 w-12 ml-3 mr-6"
+          {leaderboard.map((userProgress, index) => {
+            const rank = getRankFromXP(userProgress.points);
+            return (
+              <div 
+                key={userProgress.userId}
+                className="flex items-center w-full p-2 px-4 rounded-xl hover:bg-gray-200/50"
               >
-                <AvatarImage
-                  className="object-cover"
-                  src={userProgress.userImageSrc}
-                />
-              </Avatar>
-              <p className="font-bold text-neutral-800 flex-1">
-                {userProgress.userName}
-              </p>
-              <p className="text-muted-foreground">
-                {userProgress.points} XP
-              </p>
-            </div>
-          ))}
+                <p className="font-bold text-lime-700 mr-4">{index + 1}</p>
+                <Avatar
+                  className="border bg-green-500 h-12 w-12 ml-3 mr-6"
+                >
+                  <AvatarImage
+                    className="object-cover"
+                    src={userProgress.userImageSrc}
+                  />
+                </Avatar>
+                <p className="font-bold text-neutral-800 flex-1">
+                  {userProgress.userName}
+                </p>
+                <div className="flex items-center gap-3">
+                  <div className={`flex items-center gap-1 px-2 py-1 rounded ${rank.bgColor}`}>
+                    <span className="text-sm">{rank.icon}</span>
+                    <span className={`text-xs font-semibold ${rank.color}`}>{rank.name}</span>
+                  </div>
+                  <p className="text-muted-foreground">
+                    {userProgress.points} XP
+                  </p>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </FeedWrapper>
     </div>

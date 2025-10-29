@@ -13,10 +13,12 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 
 const TEACHER_DATA = path.join(process.cwd(), 'data', 'teacher_activities.json');
+const READING_DATA = path.join(process.cwd(), 'data', 'reading_activities.json');
 
 // Dynamically import client components
 const TeacherActivityClient = dynamic(() => import('@/app/components/teacher-activity'), { ssr: false });
 const TeacherActivityList = dynamic(() => import('@/app/components/teacher-activity-list'), { ssr: false });
+const ReadingActivityList = dynamic(() => import('@/app/components/reading-activity-list'), { ssr: false });
 
 const LearnPage = async () => {
   const [userProgress, userSubscription] = await Promise.all([getUserProgress(), getUserSubscription()]);
@@ -32,14 +34,28 @@ const LearnPage = async () => {
       <StickyWrapper>
         <UserProgress
           activeCourse={userProgress.activeCourse}
-          hearts={userProgress.hearts}
           points={userProgress.points}
           hasActiveSubscription={isPro}
         />
-        <Quests points={userProgress.points} />
+        <Quests points={userProgress.points} courseId={userProgress.activeCourseId} />
       </StickyWrapper>
       <FeedWrapper>
         <Header title={userProgress.activeCourse.title} />
+        {(() => {
+          try {
+            const raw = fs.readFileSync(READING_DATA, 'utf-8');
+            const activities = JSON.parse(raw || '[]');
+            const filtered = Array.isArray(activities)
+              ? activities.filter((a: any) => a && a.courseId === userProgress.activeCourseId)
+              : [];
+            if (filtered && filtered.length > 0) {
+              return <ReadingActivityList activities={filtered} />;
+            }
+          } catch (e) {
+            // ignore
+          }
+          return null;
+        })()}
         {(() => {
           try {
             const raw = fs.readFileSync(TEACHER_DATA, 'utf-8');

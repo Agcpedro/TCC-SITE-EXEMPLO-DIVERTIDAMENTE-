@@ -1,7 +1,7 @@
-import Image from "next/image";
 import { Check } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { getCourseEmoji } from "@/lib/course-emojis";
 
 type Props = {
   title: string;
@@ -20,6 +20,8 @@ export const Card = ({
   onClick,
   active,
 }: Props) => {
+  const emoji = getCourseEmoji(title);
+  
   return (
     <div
       onClick={() => onClick(id)}
@@ -35,13 +37,9 @@ export const Card = ({
           </div>
         )}
       </div>
-      <Image
-        src={imageSrc}
-        alt={title}
-        height={70}
-        width={93.33}
-        className="rounded-lg drop-shadow-md border object-cover"
-      />
+      <div className="text-7xl my-4">
+        {emoji}
+      </div>
       <p className="text-neutral-700 text-center font-bold mt-3">
         {title}
       </p>

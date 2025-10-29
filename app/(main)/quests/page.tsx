@@ -7,7 +7,7 @@ import { StickyWrapper } from "@/components/sticky-wrapper";
 import { getUserProgress, getUserSubscription } from "@/db/queries";
 import { Progress } from "@/components/ui/progress";
 import { Promo } from "@/components/promo";
-import { quests } from "@/constants";
+import { getAllQuests } from "@/lib/quests";
 
 const QuestsPage = async () => {
   const userProgressData = getUserProgress();
@@ -26,13 +26,13 @@ const QuestsPage = async () => {
   }
 
   const isPro = !!userSubscription?.isActive;
+  const quests = getAllQuests(userProgress.activeCourseId);
 
   return ( 
     <div className="flex flex-row-reverse gap-[48px] px-6">
       <StickyWrapper>
         <UserProgress
           activeCourse={userProgress.activeCourse}
-          hearts={userProgress.hearts}
           points={userProgress.points}
           hasActiveSubscription={isPro}
         />

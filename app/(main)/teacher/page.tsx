@@ -1,8 +1,13 @@
 import fs from 'fs';
 import path from 'path';
 import Link from 'next/link';
+import TeacherActivitiesManager from '@/app/components/teacher-activities-manager';
+import TeacherQuestsManager from '@/app/components/teacher-quests-manager';
+import ReadingActivitiesManager from '@/app/components/reading-activities-manager';
 
 const TEACHER_DATA = path.join(process.cwd(), 'data', 'teacher_activities.json');
+const QUESTS_DATA = path.join(process.cwd(), 'data', 'teacher_quests.json');
+const READING_DATA = path.join(process.cwd(), 'data', 'reading_activities.json');
 
 export default function TeacherPage() {
   let activities = [];
@@ -13,9 +18,25 @@ export default function TeacherPage() {
     activities = [];
   }
 
+  let quests = [];
+  try {
+    const raw = fs.readFileSync(QUESTS_DATA, 'utf-8');
+    quests = JSON.parse(raw || '[]');
+  } catch (e) {
+    quests = [];
+  }
+
+  let readingActivities = [];
+  try {
+    const raw = fs.readFileSync(READING_DATA, 'utf-8');
+    readingActivities = JSON.parse(raw || '[]');
+  } catch (e) {
+    readingActivities = [];
+  }
+
   return (
     <div>
-      <p className="text-muted-foreground mb-4">Welcome to the Teacher area. Create and manage detailed activities below.</p>
+      <p className="text-muted-foreground mb-4">Welcome to the Teacher area. Create and manage detailed activities and quests below.</p>
 
       <div className="space-y-4">
         <div className="p-4 border rounded flex items-center justify-between">
@@ -29,19 +50,19 @@ export default function TeacherPage() {
         <div className="p-4 border rounded">
           <h3 className="font-semibold mb-2">Existing activities</h3>
           {activities.length === 0 && <p className="text-sm text-muted-foreground">No activities yet.</p>}
-          <ul className="space-y-2">
-            {activities.map((a: any) => (
-              <li key={a.id} className="p-3 border rounded flex items-center justify-between">
-                <div>
-                  <div className="font-medium">{a.title}</div>
-                  <div className="text-sm text-muted-foreground">{a.description}</div>
-                </div>
-                <div className="flex gap-2">
-                  <Link href={`/teacher/${a.id}/edit`} className="text-sky-600">Edit</Link>
-                </div>
-              </li>
-            ))}
-          </ul>
+          {activities.length > 0 && <TeacherActivitiesManager activities={activities} />}
+        </div>
+
+        <div className="p-4 border rounded">
+          <h3 className="font-semibold mb-4">Reading Activities</h3>
+          <p className="text-sm text-muted-foreground mb-4">Create reading activities with PDF uploads. Students earn XP by scrolling to the end.</p>
+          <ReadingActivitiesManager activities={readingActivities} />
+        </div>
+
+        <div className="p-4 border rounded">
+          <h3 className="font-semibold mb-4">Custom Quests</h3>
+          <p className="text-sm text-muted-foreground mb-4">Create custom quests by setting the required XP value. They will appear in the Quests page.</p>
+          <TeacherQuestsManager quests={quests} />
         </div>
       </div>
     </div>

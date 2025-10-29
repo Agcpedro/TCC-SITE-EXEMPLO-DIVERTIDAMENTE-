@@ -1,15 +1,18 @@
 import Link from "next/link";
 import Image from "next/image";
 
-import { quests } from "@/constants";
+import { getAllQuests } from "@/lib/quests";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 
 type Props = {
   points: number;
+  courseId?: number;
 };
 
-export const Quests = ({ points }: Props) => {
+export const Quests = ({ points, courseId }: Props) => {
+  const quests = getAllQuests(courseId);
+  
   return (
     <div className="border-2 rounded-xl p-4 space-y-4">
       <div className="flex items-center justify-between w-full space-y-2">

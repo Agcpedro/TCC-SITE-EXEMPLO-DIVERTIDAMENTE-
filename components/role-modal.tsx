@@ -9,16 +9,19 @@ export default function RoleModal() {
   const [open, setOpen] = useState(false);
   const [role, setRole] = useState<string | null>(null);
 
+  // Read stored role once on mount (do not auto-open here — only via event)
   useEffect(() => {
     try {
       const stored = localStorage.getItem('user_role');
-      if (!stored) {
-        // show the modal on every visit where role isn't set
-        setOpen(true);
-      } else {
-        setRole(stored);
-      }
+      if (stored) setRole(stored);
     } catch (e) {
+      // ignore
+    }
+  }, []);
+
+  // Always show modal on mount only if on /learn page
+  useEffect(() => {
+    if (window.location.pathname === '/learn') {
       setOpen(true);
     }
   }, []);
@@ -35,6 +38,13 @@ export default function RoleModal() {
     try {
       localStorage.setItem('user_role', r);
       setRole(r);
+    } catch (e) {
+      // ignore
+    }
+    // Also persist as a cookie so middleware/server can gate routes
+    try {
+      const oneYearSeconds = 60 * 60 * 24 * 365;
+      document.cookie = `user_role=${encodeURIComponent(r)}; path=/; max-age=${oneYearSeconds}`;
     } catch (e) {
       // ignore
     }

@@ -34,12 +34,11 @@ const ShopPage = async () => {
       <StickyWrapper>
         <UserProgress
           activeCourse={userProgress.activeCourse}
-          hearts={userProgress.hearts}
           points={userProgress.points}
           hasActiveSubscription={isPro}
         />
   {/* Promo removed: no Upgrade to Pro UI shown */}
-        <Quests points={userProgress.points} />
+        <Quests points={userProgress.points} courseId={userProgress.activeCourseId} />
       </StickyWrapper>
       <FeedWrapper>
         <div className="w-full flex flex-col items-center">
@@ -56,7 +55,6 @@ const ShopPage = async () => {
             Spend your points on cool stuff.
           </p>
           <Items
-            hearts={userProgress.hearts}
             points={userProgress.points}
             hasActiveSubscription={isPro}
           />

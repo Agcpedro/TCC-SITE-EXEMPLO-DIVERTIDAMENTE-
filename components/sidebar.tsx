@@ -12,6 +12,7 @@ import { Loader } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 import { SidebarItem } from "./sidebar-item";
+import { RoleToggle } from "./role-toggle";
 
 type Props = {
   className?: string;
@@ -23,14 +24,11 @@ export const Sidebar = ({ className }: Props) => {
   React.useEffect(() => {
     try {
       const r = localStorage.getItem('user_role');
-      setRole(r);
+      setRole(r || 'student');
     } catch (e) {
-      setRole(null);
+      setRole('student');
     }
   }, []);
-
-  // remember a path the user attempted to navigate to before role selection
-  const requestedPathRef = React.useRef<string | null>(null);
 
   React.useEffect(() => {
     const handler = (e: Event) => {
@@ -39,12 +37,6 @@ export const Sidebar = ({ className }: Props) => {
         const r = ce.detail?.role;
         if (r) {
           setRole(r);
-        }
-        const requested = requestedPathRef.current;
-        if (requested) {
-          // navigate after a small timeout to let the modal close
-          window.location.href = requested;
-          requestedPathRef.current = null;
         }
       } catch (err) {}
     };
@@ -69,20 +61,6 @@ export const Sidebar = ({ className }: Props) => {
           label="Learn" 
           href="/learn"
           iconSrc="/learn.svg"
-          onBeforeNavigate={(href) => {
-            try {
-              const r = localStorage.getItem('user_role');
-              if (!r) {
-                // store intent and show modal
-                requestedPathRef.current = href;
-                const ev = new Event('show-role-modal');
-                window.dispatchEvent(ev);
-                return false; // prevent navigation
-              }
-            } catch (e) {
-              // if any error, allow navigation
-            }
-          }}
         />
         <SidebarItem 
           label="Leaderboard" 
@@ -102,13 +80,16 @@ export const Sidebar = ({ className }: Props) => {
           />
         )}
       </div>
-      <div className="p-4">
-        <ClerkLoading>
-          <Loader className="h-5 w-5 text-muted-foreground animate-spin" />
-        </ClerkLoading>
-        <ClerkLoaded>
-          <UserButton afterSignOutUrl="/" />
-        </ClerkLoaded>
+      <div className="p-4 space-y-4">
+        <RoleToggle />
+        <div className="border-t-2 pt-4">
+          <ClerkLoading>
+            <Loader className="h-5 w-5 text-muted-foreground animate-spin" />
+          </ClerkLoading>
+          <ClerkLoaded>
+            <UserButton afterSignOutUrl="/" />
+          </ClerkLoaded>
+        </div>
       </div>
     </div>
   );
