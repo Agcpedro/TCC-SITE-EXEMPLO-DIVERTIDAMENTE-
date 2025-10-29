@@ -7,53 +7,43 @@ export const Footer = () => {
       <div className="max-w-screen-lg mx-auto flex items-center justify-evenly h-full">
         <Button size="lg" variant="ghost" className="w-full">
           <Image 
-            src="/hr.svg" 
-            alt="Croatian" 
+            src="/placeholder-course.svg" 
+            alt="Português" 
             height={32} 
             width={40}
             className="mr-4 rounded-md"
           />
-          Croatian
+          Português
         </Button>
         <Button size="lg" variant="ghost" className="w-full">
           <Image 
-            src="/es.svg" 
-            alt="Spanish" 
+            src="/placeholder-course.svg" 
+            alt="Matemática" 
             height={32} 
             width={40}
             className="mr-4 rounded-md"
           />
-          Spanish
+          Matemática
         </Button>
         <Button size="lg" variant="ghost" className="w-full">
           <Image 
-            src="/fr.svg" 
-            alt="French" 
+            src="/placeholder-course.svg" 
+            alt="Geografia" 
             height={32} 
             width={40}
             className="mr-4 rounded-md"
           />
-          French
+          Geografia
         </Button>
         <Button size="lg" variant="ghost" className="w-full">
           <Image 
-            src="/it.svg" 
-            alt="Italian" 
+            src="/placeholder-course.svg" 
+            alt="História" 
             height={32} 
             width={40}
             className="mr-4 rounded-md"
           />
-          Italian
-        </Button>
-        <Button size="lg" variant="ghost" className="w-full">
-          <Image 
-            src="/jp.svg" 
-            alt="Japanese" 
-            height={32} 
-            width={40}
-            className="mr-4 rounded-md"
-          />
-          Japanese
+          História
         </Button>
       </div>
     </footer>
