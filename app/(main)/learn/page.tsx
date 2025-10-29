@@ -40,16 +40,15 @@ const LearnPage = async () => {
       </StickyWrapper>
       <FeedWrapper>
         <Header title={userProgress.activeCourse.title} />
-  {/* Built-in Units removed — only teacher activities are displayed here now. */}
-        {/* Teacher-created activities: client component splits available vs history using localStorage */}
         {(() => {
           try {
             const raw = fs.readFileSync(TEACHER_DATA, 'utf-8');
             const activities = JSON.parse(raw || '[]');
-            if (!activities || activities.length === 0) return null;
-            return (
-              <TeacherActivityList activities={activities} />
-            );
+            const filtered = Array.isArray(activities)
+              ? activities.filter((a: any) => a && a.courseId === userProgress.activeCourseId)
+              : [];
+            if (!filtered || filtered.length === 0) return null;
+            return <TeacherActivityList activities={filtered} />;
           } catch (e) {
             return null;
           }

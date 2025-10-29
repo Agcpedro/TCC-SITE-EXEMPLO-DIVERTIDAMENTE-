@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import dynamic from 'next/dynamic';
+import { getUserProgress } from '@/db/queries';
 
 const TEACHER_DATA = path.join(process.cwd(), 'data', 'teacher_activities.json');
 
@@ -16,6 +17,12 @@ export default async function ActivityPage({ params }: Props) {
     const activities = JSON.parse(raw || '[]');
     const activity = activities.find((a: any) => String(a.id) === String(params.id));
     if (!activity) return <div className="p-6">Activity not found</div>;
+
+    // Enforce subject scoping: only allow if activity matches user's active course
+    const user = await getUserProgress();
+    if (!user?.activeCourseId || activity.courseId !== user.activeCourseId) {
+      return <div className="p-6">Activity not found</div>;
+    }
 
     return (
       <div className="px-6 py-8">
